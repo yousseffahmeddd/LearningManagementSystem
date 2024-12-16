@@ -1,4 +1,5 @@
 package com.example.demo.configuration;
+import com.example.demo.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import com.example.demo.repository.IUserRepository;
 import com.example.demo.service.UserService;
 import com.example.demo.filter.JWTAuthFilter;
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -27,15 +27,15 @@ public class SecurityConfig {
     }
     // User Creation
     @Bean
-    public UserDetailsService userDetailsService(IUserRepository repository, PasswordEncoder passwordEncoder) {
+    public UserDetailsService userDetailsService(UserRepository repository, PasswordEncoder passwordEncoder) {
         return new UserService(repository, passwordEncoder);
     }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationProvider authenticationProvider) throws Exception {
         return http
-                .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/auth/generateToken", "/auth/register").permitAll()
-                        .requestMatchers("/auth/hello").authenticated()
+                .authorizeHttpRequests((auth) -> auth
+                        .requestMatchers("/auth/login", "/auth/register").permitAll()
+                        .requestMatchers("/auth/hello", "/auth/profile", "/auth/list", "/auth/{id}").authenticated()
                 )
                 .httpBasic(withDefaults()).csrf((csrf) -> csrf.disable())
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

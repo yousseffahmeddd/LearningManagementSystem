@@ -17,7 +17,7 @@ public class UserDetailsService implements UserDetails {
     private List<GrantedAuthority> authorities;
 
     public UserDetailsService(User user) {
-        name = user.getName();
+        name = user.getUsername();
         password = user.getPassword();
         authorities = Arrays.stream(user.getRole().toString().split(","))
                 .map(SimpleGrantedAuthority::new)

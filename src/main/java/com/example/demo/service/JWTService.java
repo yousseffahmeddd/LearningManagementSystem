@@ -23,7 +23,6 @@ public class JWTService {
         Map<String, Object> claims = new HashMap<>();
 
         return createToken(claims, username);
-
     }
 
     private String createToken(Map<String, Object> claims, String username) {
