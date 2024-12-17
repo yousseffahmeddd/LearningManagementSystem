@@ -35,7 +35,11 @@ public class SecurityConfig {
         return http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/auth/login", "/auth/register").permitAll()
-                        .requestMatchers("/auth/hello", "/auth/profile", "/auth/list", "/auth/{id}").authenticated()
+                        .requestMatchers(
+                                "/auth/hello", "/auth/profile", "/auth/list", "/auth/{id}", "/api/courses",
+                                "/{courseId}", "/api/lessons", "/api/enrollments", "/course/{courseId}",
+                                "/api/attendance", "/generate-otp", "/submit-otp", "/lesson/{lessonId}/marked"
+                        ).authenticated()
                 )
                 .httpBasic(withDefaults()).csrf((csrf) -> csrf.disable())
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
