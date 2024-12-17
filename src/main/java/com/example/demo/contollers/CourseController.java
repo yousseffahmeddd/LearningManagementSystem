@@ -27,11 +27,11 @@ public class CourseController {
             @RequestBody Course course,
             @RequestHeader("User-Role") String role) {
         try {
-           UserRole userRole = UserRole.valueOf(role.toUpperCase());
-           // Call service to create course
-           courseService.createCourse(userRole, course.getTitle(), course.getDescription(), course.getHours(), course.getId());
-           return ResponseEntity.ok("Course created successfully");
-       }catch (IllegalArgumentException e) {
+            UserRole userRole = UserRole.valueOf(role.toUpperCase());
+            // Call service to create course
+            courseService.createCourse(userRole, course.getTitle(), course.getDescription(), course.getHours(), course.getId(), course.getInstructorId());
+            return ResponseEntity.ok("Course created successfully");
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.status(400).body(e.getMessage());
         }
     }

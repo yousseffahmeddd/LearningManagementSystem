@@ -1,21 +1,31 @@
 package com.example.demo.models;
 
+import com.example.demo.models.Course;
+import com.example.demo.models.UserRole;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class User {
     private Long id;
     private String username;
     private String password;
     private String email;
     private UserRole role;
+    private List<Course> courses;
 
     // Constructors, Getters, and Setters
-    public User() {}
+    public User() {
+        this.courses = new ArrayList<>();
+    }
 
-    public User(Long id, String username, String password, String email, UserRole role) {
+    public User(Long id, String username, String password, String email, UserRole role, List<Course> courses) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
         this.role = role;
+        this.courses = courses != null ? courses : new ArrayList<>();
     }
 
     public Long getId() {
@@ -58,6 +68,14 @@ public class User {
         this.role = role;
     }
 
+    public List<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(List<Course> courses) {
+        this.courses = courses != null ? courses : new ArrayList<>();
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -66,6 +84,7 @@ public class User {
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", role=" + role +
+                ", courses=" + courses +
                 '}';
     }
 }

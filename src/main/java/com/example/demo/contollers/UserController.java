@@ -7,17 +7,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import com.example.demo.models.AuthRequest;
-import com.example.demo.models.User;
 import com.example.demo.service.JWTService;
 import com.example.demo.service.UserService;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
-import java.util.List;
-
+import com.example.demo.models.User;
 @RestController
 @RequestMapping("/auth")
 public class UserController {

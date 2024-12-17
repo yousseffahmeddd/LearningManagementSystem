@@ -12,8 +12,7 @@ import java.util.Optional;
 public class CourseRepository {
     private final Map<String, Course> courses = new HashMap<>();
 
-    public Course save(String id, String title, String description , Integer hours) {
-        Course course = new Course(id, title, description , hours);
+    public Course save(Course course) {
         courses.put(course.getId(), course);
         return course;
     }

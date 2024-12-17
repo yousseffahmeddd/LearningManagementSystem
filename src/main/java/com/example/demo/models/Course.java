@@ -7,26 +7,20 @@ public class Course {
     private String title;
     private String description;
     private Integer hours;
-    private User instructor;
-    private List<User>students;
+    private Long instructorId;
+    private List<User> students;
 
     public Course() {
     }
 
-    public Course(String id, String title, String description, Integer hours, User instructor) {
+    public Course(String id, String title, String description, Integer hours, Long instructorId) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.hours = hours;
-        this.instructor = instructor;
+        this.instructorId = instructorId;
     }
 
-    public Course(String id, String title,String description, Integer hours ) {
-        this.id = id;
-        this.description = description;
-        this.hours = hours;
-        this.title = title;
-    }
 
     public String getId() {
         return id;
@@ -60,12 +54,20 @@ public class Course {
         this.hours = hours;
     }
 
-    public User getInstructor() {
-        return instructor;
+    public Long getInstructorId() {
+        return instructorId;
     }
 
-    public void setInstructor(User instructor) {
-        this.instructor = instructor;
+    public void setInstructor(Long instructor) {
+        this.instructorId = instructor;
+    }
+
+    public List<User> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<User> students) {
+        this.students = students;
     }
 
     @Override
@@ -75,7 +77,8 @@ public class Course {
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", hours=" + hours +
-                ", instructor='" + instructor + '\'' +
+                ", instructor=" + instructorId +
+                ", students=" + students +
                 '}';
     }
 }

@@ -1,7 +1,9 @@
 package com.example.demo.service;
+import com.example.demo.models.User;
 import com.example.demo.models.UserRole;
 import com.example.demo.models.Course;
 import com.example.demo.repository.CourseRepository;
+import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,30 +12,45 @@ import java.util.Optional;
 
 @Service
 public class CourseService {
-    private final CourseRepository repository ;
+    private final CourseRepository courseRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public CourseService(CourseRepository repository) {
-        this.repository = repository;
+    public CourseService(CourseRepository courseRepository, UserRepository userRepository) {
+        this.courseRepository = courseRepository;
+        this.userRepository = userRepository;
     }
 
-    public Course createCourse(UserRole role, String title, String description, Integer hours, String id) {
+    public Course createCourse(UserRole role, String title, String description, Integer hours, String courseId, Long instructorId) {
         if (!isInstructorOrAdmin(role)) {
             throw new IllegalArgumentException("Only Instructors or Admins can create courses.");
         }
 
-        if (repository.existsById(id)) {
+        if (courseRepository.existsById(courseId)) {
             throw new IllegalArgumentException("A course with this ID already exists.");
         }
-        if (repository.existsByTitle(title)) {
+        if (courseRepository.existsByTitle(title)) {
             throw new IllegalArgumentException("A course with this title already exists.");
         }
 
-        return repository.save(id, title, description, hours);
+        // Check if the instructor exists
+        Optional<User> instructorOptional = userRepository.findById(instructorId);
+        if (instructorOptional.isEmpty() || instructorOptional.get().getRole() != UserRole.INSTRUCTOR) {
+            throw new IllegalArgumentException("Instructor not found or not an instructor.");
+        }
+
+        User instructor = instructorOptional.get();
+        Course course = new Course(courseId, title, description, hours, instructorId);
+
+        // Add the course to the instructor's list of courses
+        instructor.getCourses().add(course);
+        userRepository.save(instructor);
+
+        return courseRepository.save(course);
     }
 
     public Collection<Course> getAllCourses() {
-        return repository.findAll();
+        return courseRepository.findAll();
     }
 
     public void deleteCourse(UserRole role, String courseId) {
@@ -42,39 +59,33 @@ public class CourseService {
         }
 
         // Check if the course exists before deleting
-        if (!repository.existsById(courseId)) {
+        if (!courseRepository.existsById(courseId)) {
             throw new IllegalArgumentException("Course with ID " + courseId + " not found.");
         }
-        repository.delete(courseId);
+        courseRepository.delete(courseId);
     }
 
-    // Update course data
     public void updateCourse(String id, Course updatedCourse, UserRole role) {
-        // Check if the user has the right role (Instructor or Admin)
         if (!isInstructorOrAdmin(role)) {
             throw new IllegalArgumentException("Only Instructors or Admins can update courses.");
         }
 
-        // Check if the course exists for the given ID
-        Optional<Course> existingCourse = repository.findById(id);
+        Optional<Course> existingCourse = courseRepository.findById(id);
         if (existingCourse.isEmpty()) {
             throw new IllegalArgumentException("Course with ID " + id + " does not exist.");
         }
 
-        // Check for duplicate title (only if the title is being changed)
-        if (repository.existsByTitle(updatedCourse.getTitle())
+        if (courseRepository.existsByTitle(updatedCourse.getTitle())
                 && !existingCourse.get().getTitle().equalsIgnoreCase(updatedCourse.getTitle())) {
             throw new IllegalArgumentException("A course with the title '" + updatedCourse.getTitle() + "' already exists.");
         }
 
-        // Check for duplicate ID (if the ID is being changed, but usually it shouldn't)
-        if (repository.existsById(updatedCourse.getId()) && !id.equals(updatedCourse.getId())) {
+        if (courseRepository.existsById(updatedCourse.getId()) && !id.equals(updatedCourse.getId())) {
             throw new IllegalArgumentException("Another course with the ID " + updatedCourse.getId() + " already exists.");
         }
 
-        // Update the course
-        repository.delete(id);  // Delete the existing course by its ID
-        repository.save(updatedCourse.getId(), updatedCourse.getTitle(), updatedCourse.getDescription(), updatedCourse.getHours());  // Save the updated course
+        courseRepository.delete(id);
+        courseRepository.save(updatedCourse);
     }
 
     private boolean isInstructorOrAdmin(UserRole role) {
