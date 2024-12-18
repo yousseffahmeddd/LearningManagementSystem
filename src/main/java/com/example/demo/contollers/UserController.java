@@ -1,5 +1,6 @@
 package com.example.demo.contollers;
 
+import com.example.demo.models.Course;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,6 +13,8 @@ import com.example.demo.models.AuthRequest;
 import com.example.demo.service.JWTService;
 import com.example.demo.service.UserService;
 import java.util.Collection;
+import java.util.List;
+
 import com.example.demo.models.User;
 @RestController
 @RequestMapping("/auth")
@@ -99,5 +102,12 @@ public class UserController {
     @GetMapping("/hello")
     public ResponseEntity<String> hello() {
         return ResponseEntity.ok("Hello, World!");
+    }
+
+
+    @GetMapping("/{studentId}/courses")
+    public ResponseEntity<List<Course>> getEnrolledCourses(@PathVariable Long studentId) {
+        List<Course> courses = service.getEnrolledCourses(studentId);
+        return ResponseEntity.ok(courses);
     }
 }

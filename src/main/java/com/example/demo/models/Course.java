@@ -1,16 +1,26 @@
 package com.example.demo.models;
 
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Course {
     private String id;
     private String title;
     private String description;
     private Integer hours;
     private Long instructorId;
+
+    @JsonIgnore
     private List<User> students;
 
     public Course() {
+        this.students = new ArrayList<>();
     }
 
     public Course(String id, String title, String description, Integer hours, Long instructorId) {
@@ -19,6 +29,7 @@ public class Course {
         this.description = description;
         this.hours = hours;
         this.instructorId = instructorId;
+        this.students = new ArrayList<>();
     }
 
 
@@ -58,8 +69,8 @@ public class Course {
         return instructorId;
     }
 
-    public void setInstructor(Long instructor) {
-        this.instructorId = instructor;
+    public void setInstructor(Long instructorId) {
+        this.instructorId = instructorId;
     }
 
     public List<User> getStudents() {
@@ -67,7 +78,18 @@ public class Course {
     }
 
     public void setStudents(List<User> students) {
-        this.students = students;
+        this.students = students != null ? students : new ArrayList<>();
+    }
+
+    @JsonProperty("studentIds")
+    public List<Long> getStudentIds() {
+        return students.stream().map(User::getId).collect(Collectors.toList());
+    }
+
+
+    @JsonProperty("studentCount")
+    public int getStudentCount() {
+        return students.size();
     }
 
     @Override
@@ -77,8 +99,7 @@ public class Course {
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", hours=" + hours +
-                ", instructor=" + instructorId +
-                ", students=" + students +
+                ", instructorId=" + instructorId +
                 '}';
     }
 }

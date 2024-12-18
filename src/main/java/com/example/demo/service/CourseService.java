@@ -1,4 +1,5 @@
 package com.example.demo.service;
+import com.example.demo.models.CourseDTO;
 import com.example.demo.models.User;
 import com.example.demo.models.UserRole;
 import com.example.demo.models.Course;
@@ -42,8 +43,9 @@ public class CourseService {
         User instructor = instructorOptional.get();
         Course course = new Course(courseId, title, description, hours, instructorId);
 
-        // Add the course to the instructor's list of courses
-        instructor.getCourses().add(course);
+        // Convert Course to CourseDTO and add it to the instructor's list of courses
+        CourseDTO courseDTO = new CourseDTO(course.getId(), course.getTitle());
+        instructor.getCourses().add(courseDTO);
         userRepository.save(instructor);
 
         return courseRepository.save(course);

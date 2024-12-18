@@ -1,4 +1,5 @@
 package com.example.demo.configuration;
+import com.example.demo.repository.CourseRepository;
 import com.example.demo.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,8 +28,8 @@ public class SecurityConfig {
     }
     // User Creation
     @Bean
-    public UserDetailsService userDetailsService(UserRepository repository, PasswordEncoder passwordEncoder) {
-        return new UserService(repository, passwordEncoder);
+    public UserDetailsService userDetailsService(UserRepository repository, PasswordEncoder passwordEncoder, CourseRepository courseRepository) {
+        return new UserService(repository, passwordEncoder, courseRepository);
     }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationProvider authenticationProvider) throws Exception {

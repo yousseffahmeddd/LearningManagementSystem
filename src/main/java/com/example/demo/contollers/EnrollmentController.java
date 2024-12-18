@@ -33,6 +33,7 @@ public class EnrollmentController {
         }
     }
 
+
     @GetMapping
     public ResponseEntity<?> listAllEnrollments(
             @RequestHeader("User-Role") String role

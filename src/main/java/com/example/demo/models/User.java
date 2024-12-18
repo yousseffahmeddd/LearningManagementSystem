@@ -1,25 +1,44 @@
 package com.example.demo.models;
-
-import com.example.demo.models.Course;
-import com.example.demo.models.UserRole;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User {
-    private Long id;
+   /* private Long id;
     private String username;
     private String password;
     private String email;
     private UserRole role;
-    private List<Course> courses;
+    private List<CourseDTO> courses;*/
+
+    @JsonProperty("id")
+    private Long id;
+
+    @JsonProperty("username")
+    private String username;
+
+    @JsonProperty("password")
+    private String password;
+
+    @JsonProperty("email")
+    private String email;
+
+    @JsonProperty("role")
+    private UserRole role;
+
+    @JsonProperty("courses")
+    private List<CourseDTO> courses;
+
 
     // Constructors, Getters, and Setters
     public User() {
         this.courses = new ArrayList<>();
     }
 
-    public User(Long id, String username, String password, String email, UserRole role, List<Course> courses) {
+    public User(Long id, String username, String password, String email, UserRole role, List<CourseDTO> courses) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -68,11 +87,11 @@ public class User {
         this.role = role;
     }
 
-    public List<Course> getCourses() {
+    public List<CourseDTO> getCourses() {
         return courses;
     }
 
-    public void setCourses(List<Course> courses) {
+    public void setCourses(List<CourseDTO> courses) {
         this.courses = courses != null ? courses : new ArrayList<>();
     }
 

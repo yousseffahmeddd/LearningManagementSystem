@@ -1,13 +1,19 @@
 package com.example.demo.service;
 
+import com.example.demo.models.Course;
+import com.example.demo.models.CourseDTO;
 import com.example.demo.models.User;
+import com.example.demo.repository.CourseRepository;
 import com.example.demo.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -15,11 +21,14 @@ import java.util.logging.Logger;
 public class UserService implements org.springframework.security.core.userdetails.UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CourseRepository courseRepository;
     private static final Logger logger = Logger.getLogger(UserService.class.getName());
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    @Autowired
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder , CourseRepository courseRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.courseRepository = courseRepository;
     }
 
     @Override
@@ -65,6 +74,20 @@ public class UserService implements org.springframework.security.core.userdetail
         user.setId(id);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
+    }
+
+    public List<Course> getEnrolledCourses(Long studentId) {
+        User student = userRepository.findById(studentId)
+                .orElseThrow(() -> new IllegalArgumentException("Student not found"));
+
+        List<CourseDTO> courseDTOs = student.getCourses();
+        List<Course> courses = new ArrayList<>();
+
+        for (CourseDTO courseDTO : courseDTOs) {
+            courseRepository.findById(courseDTO.getId()).ifPresent(courses::add);
+        }
+
+        return courses;
     }
 
     public void deleteUser(Long id) {
