@@ -16,18 +16,17 @@ public class LessonController {
     @Autowired
     private final LessonService lessonService ;
 
-
     public LessonController(LessonService lessonService) {
         this.lessonService = lessonService;
     }
 
     @PostMapping
-    public ResponseEntity<String> createLesson(@RequestBody Lesson lesson ,
+    public ResponseEntity<String> createLesson(@RequestBody Lesson lesson,
                                                @RequestHeader("User-Role") String role) {
         try {
             UserRole userRole = UserRole.valueOf(role.toUpperCase());
-            lessonService.createLesson(lesson.getCourseId(), lesson.getTitle(), userRole);
-            return ResponseEntity.ok("Lesson add successfully.");
+            lessonService.createLesson(lesson.getCourseId(), lesson.getTitle(), userRole, lesson.getInstructorId());
+            return ResponseEntity.ok("Lesson added successfully.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(400).body(e.getMessage());
         }

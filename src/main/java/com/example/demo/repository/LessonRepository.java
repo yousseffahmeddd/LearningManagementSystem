@@ -13,9 +13,10 @@ public class LessonRepository {
     private final Map<Long, Lesson> lessons = new HashMap<>();
     private Long nextId = 0L;
 
-    public void save(String courseId, String title) {
-        Lesson lesson = new Lesson(++nextId, courseId, title);
+    public Lesson save(String courseId, String title, Long instructorId) {
+        Lesson lesson = new Lesson(++nextId, courseId, title, instructorId);
         lessons.put(lesson.getId(), lesson);
+        return lesson;
     }
 
     public Collection<Lesson> findAll() {

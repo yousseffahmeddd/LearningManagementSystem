@@ -19,8 +19,13 @@ public class Course {
     @JsonIgnore
     private List<User> students;
 
+    @JsonIgnore
+    private List<Lesson> lessons;
+
+
     public Course() {
         this.students = new ArrayList<>();
+        this.lessons = new ArrayList<>();
     }
 
     public Course(String id, String title, String description, Integer hours, Long instructorId) {
@@ -30,8 +35,8 @@ public class Course {
         this.hours = hours;
         this.instructorId = instructorId;
         this.students = new ArrayList<>();
+        this.lessons = new ArrayList<>();
     }
-
 
     public String getId() {
         return id;
@@ -69,7 +74,7 @@ public class Course {
         return instructorId;
     }
 
-    public void setInstructor(Long instructorId) {
+    public void setInstructorId(Long instructorId) {
         this.instructorId = instructorId;
     }
 
@@ -78,7 +83,20 @@ public class Course {
     }
 
     public void setStudents(List<User> students) {
-        this.students = students != null ? students : new ArrayList<>();
+        this.students = students;
+    }
+
+    public List<Lesson> getLessons() {
+        return lessons;
+    }
+
+    public void setLessons(List<Lesson> lessons) {
+        this.lessons = lessons;
+    }
+
+    @JsonProperty("studentCount")
+    public int getStudentCount() {
+        return students.size();
     }
 
     @JsonProperty("studentIds")
@@ -86,11 +104,17 @@ public class Course {
         return students.stream().map(User::getId).collect(Collectors.toList());
     }
 
-
-    @JsonProperty("studentCount")
-    public int getStudentCount() {
-        return students.size();
+    @JsonProperty("LessonCount")
+    public int LessonCount() {
+        return lessons.size();
     }
+
+    @JsonProperty("lessonIds")
+    public List<Long> getLessonIds() {
+        return lessons.stream().map(Lesson::getId).collect(Collectors.toList());
+    }
+
+
 
     @Override
     public String toString() {

@@ -34,6 +34,11 @@ public class CourseService {
             throw new IllegalArgumentException("A course with this title already exists.");
         }
 
+
+        if (instructorId == null) {
+            throw new IllegalArgumentException("Instructor ID cannot be null.");
+        }
+
         // Check if the instructor exists
         Optional<User> instructorOptional = userRepository.findById(instructorId);
         if (instructorOptional.isEmpty() || instructorOptional.get().getRole() != UserRole.INSTRUCTOR) {

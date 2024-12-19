@@ -7,44 +7,31 @@ import java.util.List;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User {
-   /* private Long id;
-    private String username;
-    private String password;
-    private String email;
-    private UserRole role;
-    private List<CourseDTO> courses;*/
-
-    @JsonProperty("id")
     private Long id;
-
-    @JsonProperty("username")
     private String username;
-
-    @JsonProperty("password")
     private String password;
-
-    @JsonProperty("email")
     private String email;
-
-    @JsonProperty("role")
     private UserRole role;
-
-    @JsonProperty("courses")
     private List<CourseDTO> courses;
+    private List<Lesson> lessons;
 
 
-    // Constructors, Getters, and Setters
+
+
+
     public User() {
         this.courses = new ArrayList<>();
+        this.lessons = new ArrayList<>();
     }
 
-    public User(Long id, String username, String password, String email, UserRole role, List<CourseDTO> courses) {
+    public User(Long id, String username, String password, String email, UserRole role, List<CourseDTO> courses, List<Lesson> lessons) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
         this.role = role;
         this.courses = courses != null ? courses : new ArrayList<>();
+        this.lessons = lessons != null ? lessons : new ArrayList<>();
     }
 
     public Long getId() {
@@ -92,7 +79,15 @@ public class User {
     }
 
     public void setCourses(List<CourseDTO> courses) {
-        this.courses = courses != null ? courses : new ArrayList<>();
+        this.courses = courses;
+    }
+
+    public List<Lesson> getLessons() {
+        return lessons;
+    }
+
+    public void setLessons(List<Lesson> lessons) {
+        this.lessons = lessons;
     }
 
     @Override
@@ -104,6 +99,7 @@ public class User {
                 ", email='" + email + '\'' +
                 ", role=" + role +
                 ", courses=" + courses +
+                ", lessons=" + lessons +
                 '}';
     }
 }
