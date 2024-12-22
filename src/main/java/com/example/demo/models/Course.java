@@ -3,11 +3,15 @@ package com.example.demo.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Setter
+@Getter
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Course {
     private String id;
@@ -15,6 +19,7 @@ public class Course {
     private String description;
     private Integer hours;
     private Long instructorId;
+    private List<Question> courseQuestions;
 
     @JsonIgnore
     private List<User> students;
@@ -36,62 +41,7 @@ public class Course {
         this.instructorId = instructorId;
         this.students = new ArrayList<>();
         this.lessons = new ArrayList<>();
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Integer getHours() {
-        return hours;
-    }
-
-    public void setHours(Integer hours) {
-        this.hours = hours;
-    }
-
-    public Long getInstructorId() {
-        return instructorId;
-    }
-
-    public void setInstructorId(Long instructorId) {
-        this.instructorId = instructorId;
-    }
-
-    public List<User> getStudents() {
-        return students;
-    }
-
-    public void setStudents(List<User> students) {
-        this.students = students;
-    }
-
-    public List<Lesson> getLessons() {
-        return lessons;
-    }
-
-    public void setLessons(List<Lesson> lessons) {
-        this.lessons = lessons;
+        this.courseQuestions = new ArrayList<>();
     }
 
     @JsonProperty("studentCount")
@@ -114,7 +64,9 @@ public class Course {
         return lessons.stream().map(Lesson::getId).collect(Collectors.toList());
     }
 
-
+    public void addQuestionToCourseQuestions(Question question) {
+        this.courseQuestions.add(question);
+    }
 
     @Override
     public String toString() {

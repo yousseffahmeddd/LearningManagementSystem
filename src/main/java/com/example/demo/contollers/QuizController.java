@@ -1,5 +1,7 @@
 package com.example.demo.contollers;
 
+import com.example.demo.models.Question;
+import com.example.demo.models.UserRole;
 import com.example.demo.service.QuizService;
 import com.example.demo.models.Quiz;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +20,38 @@ public class QuizController {
 
     // Endpoint to create a new quiz
     @PostMapping
-    public ResponseEntity<?> createQuiz(@RequestBody Quiz quiz) {
+    public ResponseEntity<?> createQuiz(@RequestBody Quiz quiz, @RequestHeader("User-Role") String role) {
         try {
             // Attempt to create the quiz
-            Quiz createdQuiz = quizService.createQuiz(quiz);
+            UserRole userRole = UserRole.valueOf(role.toUpperCase());
+            Quiz createdQuiz = quizService.createQuiz(userRole ,quiz);
             return new ResponseEntity<>(createdQuiz, HttpStatus.CREATED);
         } catch (IllegalArgumentException ex) {
             // Handle duplicate title exception
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/{quizId}/questions")
+    public ResponseEntity<?> addQuestion(@PathVariable String quizId,@RequestBody Question question,@RequestHeader("User-Role") String role) {
+        try {
+            // Attempt to add the question
+            UserRole userRole = UserRole.valueOf(role.toUpperCase());
+            quizService.addQuestion(userRole, quizId, question);
+            return new ResponseEntity<>("Question added successfully.", HttpStatus.OK);
+        } catch (IllegalArgumentException ex) {
+            // Handle quiz not found exception
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/{quizId}/attemptQuiz")
+    public ResponseEntity<?> attemptQuiz(@PathVariable String quizId,@RequestParam int numOfQuestions) {
+        try {
+            // Attempt to add the question
+            return new ResponseEntity<>(quizService.attemptQuiz(quizId, numOfQuestions), HttpStatus.OK);
+        } catch (IllegalArgumentException ex) {
+            // Handle quiz not found exception
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
@@ -34,4 +61,6 @@ public class QuizController {
     public List<Quiz> getAllQuizzes() {
         return quizService.getAllQuizzes();
     }
+
+
 }
