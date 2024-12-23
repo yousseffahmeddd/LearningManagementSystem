@@ -56,13 +56,13 @@ class EnrollmentControllerTest {
         baseUrl = "http://localhost:" + port + "/api/enrollments";
 
         // Create and save the required users
-        User studentUser = new User(3L, "mazen", passwordEncoder.encode("password"), "mazen@gmail.com", UserRole.STUDENT, null, null);
+        User studentUser = new User(3L, "mazen", passwordEncoder.encode("password"), "mazen@gmail.com", UserRole.STUDENT, null, null , null);
         userRepository.save(studentUser);
 
-        User instructorUser = new User(1L, "youssef", passwordEncoder.encode("password"), "youssef@gmail.com", UserRole.INSTRUCTOR, null, null);
+        User instructorUser = new User(1L, "youssef", passwordEncoder.encode("password"), "youssef@gmail.com", UserRole.INSTRUCTOR, null, null , null);
         userRepository.save(instructorUser);
 
-        User adminUser = new User(2L, "mohamed", passwordEncoder.encode("password"), "mohamed@gmail.com", UserRole.ADMIN, null, null);
+        User adminUser = new User(2L, "mohamed", passwordEncoder.encode("password"), "mohamed@gmail.com", UserRole.ADMIN, null, null , null);
         userRepository.save(adminUser);
 
         // Create and save a course

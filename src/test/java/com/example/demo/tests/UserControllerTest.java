@@ -44,7 +44,7 @@ class UserControllerTest {
     @BeforeEach
     void setUp() {
         baseUrl = "http://localhost:" + port + "/auth";
-        userRepository.save(new User(1L, "youssef", passwordEncoder.encode("password"), "youssef@example.com", UserRole.STUDENT, null, null));
+        userRepository.save(new User(1L, "youssef", passwordEncoder.encode("password"), "youssef@example.com", UserRole.STUDENT, null, null , null));
     }
 
     @Test
@@ -52,7 +52,7 @@ class UserControllerTest {
         // Ensure the repository is clean before the test
         userRepository.deleteAll();
 
-        User newUser = new User(2L, "youssef", "password", "youssef@gmail.com", UserRole.STUDENT, null, null);
+        User newUser = new User(2L, "youssef", "password", "youssef@gmail.com", UserRole.STUDENT, null, null , null);
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/json");
         HttpEntity<User> request = new HttpEntity<>(newUser, headers);
@@ -66,7 +66,7 @@ class UserControllerTest {
     @Test
     void testLoginSuccess() {
         // Ensure the user exists in the repository with the correct password
-        User existingUser = new User(1L, "youssef", passwordEncoder.encode("password"), "youssef@gmail.com", UserRole.STUDENT, null, null);
+        User existingUser = new User(1L, "youssef", passwordEncoder.encode("password"), "youssef@gmail.com", UserRole.STUDENT, null, null , null);
         userRepository.save(existingUser);
 
         HttpHeaders headers = new HttpHeaders();
@@ -82,7 +82,7 @@ class UserControllerTest {
     @Test
     void testGetUserProfile() {
         // Ensure the user exists in the repository with the correct email
-        User existingUser = new User(1L, "youssef", passwordEncoder.encode("password"), "youssef@gmail.com", UserRole.STUDENT, null, null);
+        User existingUser = new User(1L, "youssef", passwordEncoder.encode("password"), "youssef@gmail.com", UserRole.STUDENT, null, null , null);
         userRepository.save(existingUser);
 
         // Generate a valid token for the user
@@ -119,7 +119,7 @@ class UserControllerTest {
         // Generate a valid token for the user
         String token = jwtService.generateToken("youssef");
 
-        User updatedUser = new User(1L, "youssef Ahmed", "new_password", "youssefAhmed@gmail.com", UserRole.STUDENT, null, null);
+        User updatedUser = new User(1L, "youssef Ahmed", "new_password", "youssefAhmed@gmail.com", UserRole.STUDENT, null, null , null);
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
         headers.set("Content-Type", "application/json");
@@ -149,11 +149,11 @@ class UserControllerTest {
     @Test
     void testRegisterUserWithExistingUsernameOrEmailOrId() {
         // Ensure the user exists in the repository
-        User existingUser = new User(1L, "youssef", passwordEncoder.encode("password"), "youssef@gmail.com", UserRole.STUDENT, null, null);
+        User existingUser = new User(1L, "youssef", passwordEncoder.encode("password"), "youssef@gmail.com", UserRole.STUDENT, null, null , null);
         userRepository.save(existingUser);
 
         // Attempt to register a new user with the same ID
-        User newUserWithSameId = new User(1L, "youssef Ahmed", "new_password", "youssefAhmed@gmail.com", UserRole.STUDENT, null, null);
+        User newUserWithSameId = new User(1L, "youssef Ahmed", "new_password", "youssefAhmed@gmail.com", UserRole.STUDENT, null, null , null);
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/json");
         HttpEntity<User> requestWithSameId = new HttpEntity<>(newUserWithSameId, headers);
@@ -163,7 +163,7 @@ class UserControllerTest {
         assertThat(responseWithSameId.getBody()).isEqualTo("User ID already exists: 1");
 
         // Attempt to register a new user with the same username
-        User newUserWithSameUsername = new User(2L, "youssef", "new_password", "youssefAhmed@gmail.com", UserRole.STUDENT, null, null);
+        User newUserWithSameUsername = new User(2L, "youssef", "new_password", "youssefAhmed@gmail.com", UserRole.STUDENT, null, null , null);
         HttpEntity<User> requestWithSameUsername = new HttpEntity<>(newUserWithSameUsername, headers);
 
         ResponseEntity<String> responseWithSameUsername = restTemplate.postForEntity(baseUrl + "/register", requestWithSameUsername, String.class);
@@ -171,7 +171,7 @@ class UserControllerTest {
         assertThat(responseWithSameUsername.getBody()).isEqualTo("User already exists: youssef");
 
         // Attempt to register a new user with the same email
-        User newUserWithSameEmail = new User(3L, "youssef Ahmed", "new_password", "youssef@gmail.com", UserRole.STUDENT, null, null);
+        User newUserWithSameEmail = new User(3L, "youssef Ahmed", "new_password", "youssef@gmail.com", UserRole.STUDENT, null, null , null);
         HttpEntity<User> requestWithSameEmail = new HttpEntity<>(newUserWithSameEmail, headers);
 
         ResponseEntity<String> responseWithSameEmail = restTemplate.postForEntity(baseUrl + "/register", requestWithSameEmail, String.class);

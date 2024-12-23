@@ -55,9 +55,9 @@ class LessonControllerTest {
         baseUrl = "http://localhost:" + port + "/api/lessons";
 
         // Create and save the required users
-        User instructorUser = new User(1L, "youssef", passwordEncoder.encode("password"), "youssef@gmail.com", UserRole.INSTRUCTOR, null, null);
-        User adminUser = new User(2L, "mohamed", passwordEncoder.encode("password"), "mohamed@gmail.com", UserRole.ADMIN, null, null);
-        User studentUser = new User(3L, "mazen", passwordEncoder.encode("password"), "mazen@gmail.com", UserRole.STUDENT, null, null);
+        User instructorUser = new User(1L, "youssef", passwordEncoder.encode("password"), "youssef@gmail.com", UserRole.INSTRUCTOR, null, null , null);
+        User adminUser = new User(2L, "mohamed", passwordEncoder.encode("password"), "mohamed@gmail.com", UserRole.ADMIN, null, null , null);
+        User studentUser = new User(3L, "mazen", passwordEncoder.encode("password"), "mazen@gmail.com", UserRole.STUDENT, null, null , null);
 
         userRepository.save(instructorUser);
         userRepository.save(adminUser);
