@@ -118,4 +118,32 @@ public class AssignmentController {
             );
         }
     }
+    @PostMapping("/{assignmentId}/feedback")
+    public ResponseEntity<Object> addGradeAndFeedback(
+            @RequestHeader("User-Role") String userRole,
+            @PathVariable String assignmentId,
+            @RequestBody Map<String, String> body) {
+
+        try {
+            UserRole role = UserRole.valueOf(userRole.toUpperCase());
+
+            // Retrieve request body parameters
+            String grade = body.get("grade");
+            String feedback = body.get("feedback");
+
+            // Call the service method to add grade and feedback
+            Assignment updatedAssignment = assignmentService.addGradeAndFeedback(assignmentId, grade, feedback, role);
+
+            return ResponseEntity.ok(updatedAssignment);
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(400).body(
+                    Map.of("error", e.getMessage())
+            );
+        } catch (SecurityException e) {
+            return ResponseEntity.status(403).body(
+                    Map.of("error", e.getMessage())
+            );
+        }
+    }
 }

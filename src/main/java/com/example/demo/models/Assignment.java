@@ -10,10 +10,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Assignment {
-    private String id; // Unique assignment ID
-    private String title; // Assignment title
-    private String description; // Assignment description
-    private String courseId; // The course to which this assignment belongs
+    private String id;
+    private String title;
+    private String description;
+    private String courseId;
+    private String feedback;
+    private String grade;
 
 
 }

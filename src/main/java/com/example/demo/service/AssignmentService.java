@@ -35,24 +35,7 @@ public class AssignmentService {
 
     private final AtomicInteger submissionIdCounter = new AtomicInteger(1);
 
-    public Submission submitAssignmentWithSequentialId(String studentId, String assignmentId, MultipartFile file) {
-        // Generate a new ID sequentially
-        int newId = submissionIdCounter.getAndIncrement();
 
-        // Handle file metadata
-        String fileName = file.getOriginalFilename();
-        String filePath = "uploads/" + fileName;
-
-        // Create a new submission object with sequential ID
-
-        return new Submission(
-                String.valueOf(newId), // Converts the `int` to a `String` for the ID
-                assignmentId,
-                studentId,
-                fileName,
-                filePath
-        );
-    }
     public List<Submission> getAllSubmissions(UserRole role) {
         if (role != UserRole.INSTRUCTOR) {
             throw new SecurityException("Access denied: Only instructors are allowed to view submissions.");
@@ -70,6 +53,23 @@ public class AssignmentService {
         assignment.setDescription(description);
         assignment.setCourseId(courseId);
 
+        return assignmentRepository.save(assignment);
+    }
+    public Assignment addGradeAndFeedback(String assignmentId, String grade, String feedback, UserRole role) {
+        // Check if the role is allowed to add feedback and grades
+        if (role != UserRole.INSTRUCTOR) {
+            throw new SecurityException("Access denied: Only instructors can add grades and feedback.");
+        }
+
+        // Retrieve the assignment by ID
+        Assignment assignment = assignmentRepository.findById(assignmentId)
+                .orElseThrow(() -> new IllegalArgumentException("Assignment with ID " + assignmentId + " not found."));
+
+        // Update grade and feedback
+        assignment.setGrade(grade);
+        assignment.setFeedback(feedback);
+
+        // Save the updated assignment back to the repository
         return assignmentRepository.save(assignment);
     }
 
