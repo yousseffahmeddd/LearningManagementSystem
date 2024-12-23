@@ -53,6 +53,12 @@ public class AssignmentService {
                 filePath
         );
     }
+    public List<Submission> getAllSubmissions(UserRole role) {
+        if (role != UserRole.INSTRUCTOR) {
+            throw new SecurityException("Access denied: Only instructors are allowed to view submissions.");
+        }
+        return submissionRepository.findAllSubmissions();
+    }
 
     public Assignment createAssignment(String id,String title, String description, String courseId, UserRole role) {
         if (role != UserRole.INSTRUCTOR && role != UserRole.ADMIN) {

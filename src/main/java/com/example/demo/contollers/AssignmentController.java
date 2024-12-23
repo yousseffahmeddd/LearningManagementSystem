@@ -21,6 +21,7 @@ public class AssignmentController {
     @Autowired
     private AssignmentService AssignmentService;
 
+
     @Autowired
     public AssignmentController(AssignmentService assignmentService) {
         this.assignmentService = assignmentService;
@@ -89,5 +90,32 @@ public class AssignmentController {
     @GetMapping("/assignments")
     public List<Assignment> getAllAssignments() {
         return AssignmentService.getAllassignments();
+    }
+
+    @GetMapping("/submissions")
+    public ResponseEntity<Object> getAllSubmissions(@RequestHeader("User-Role") String userRole) {
+        try {
+            UserRole role = UserRole.valueOf(userRole.toUpperCase());
+
+            // Restrict access to only instructors
+            if (role != UserRole.INSTRUCTOR) {
+                return ResponseEntity.status(403).body(
+                        Map.of("error", "Access denied: Only instructors can view all submissions.")
+                );
+            }
+
+            // Fetch submissions
+            List<Submission> submissions = assignmentService.getAllSubmissions(role);
+            return ResponseEntity.ok(submissions);
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(400).body(
+                    Map.of("error", "Invalid User Role provided.")
+            );
+        } catch (SecurityException e) {
+            return ResponseEntity.status(403).body(
+                    Map.of("error", e.getMessage())
+            );
+        }
     }
 }
