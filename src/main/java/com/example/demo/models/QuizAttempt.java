@@ -14,6 +14,5 @@ import java.util.List;
 public class QuizAttempt {
     private String quizId;
     private String studentId;
-    private List<Question> questions;
     private double grade;
 }

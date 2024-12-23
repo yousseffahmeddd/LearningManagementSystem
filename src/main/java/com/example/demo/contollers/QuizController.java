@@ -87,7 +87,6 @@ public class QuizController {
 
             quizAttempt.setQuizId(quizId);
             quizAttempt.setStudentId(studentId);
-            quizAttempt.setQuestions(questions);
             quizAttempt.setGrade(grade);
             quizService.saveQuizAttempt(quizAttempt);
 
