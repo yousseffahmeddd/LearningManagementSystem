@@ -1,9 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.models.Course;
-import com.example.demo.models.Question;
-import com.example.demo.models.Quiz;
-import com.example.demo.models.UserRole;
+import com.example.demo.models.*;
 import com.example.demo.repository.CourseRepository;
 import com.example.demo.repository.QuestionRepository;
 import com.example.demo.repository.QuizRepository;
@@ -12,6 +9,7 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Setter
@@ -27,6 +25,8 @@ public class QuizService {
 
     @Autowired
     private QuestionRepository questionRepository;
+
+    private List<QuizAttempt> quizAttempts = new ArrayList<>();
 
     public QuizService(QuizRepository quizRepository, CourseRepository courseRepository) {
         this.quizRepository = quizRepository;
@@ -93,5 +93,13 @@ public class QuizService {
     // Get all quizzes
     public List<Quiz> getAllQuizzes() {
         return quizRepository.findAll();
+    }
+
+    public void saveQuizAttempt(QuizAttempt quizAttempt) {
+        quizAttempts.add(quizAttempt);
+    }
+
+    public List<QuizAttempt> getAllQuizAttempts() {
+        return quizAttempts;
     }
 }

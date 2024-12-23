@@ -16,9 +16,6 @@ public class User {
     private List<Lesson> lessons;
 
 
-
-
-
     public User() {
         this.courses = new ArrayList<>();
         this.lessons = new ArrayList<>();

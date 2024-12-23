@@ -5,15 +5,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Assignment {
-    private String id;
-    private String title;
-    private String description;
-    private String courseId;
-    private String feedback;
-    private String grade;
+public class QuizAttempt {
+    private String quizId;
+    private String studentId;
+    private List<Question> questions;
+    private double grade;
 }
