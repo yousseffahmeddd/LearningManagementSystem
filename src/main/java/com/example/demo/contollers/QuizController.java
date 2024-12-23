@@ -56,6 +56,34 @@ public class QuizController {
         }
     }
 
+    @PostMapping("/{quizId}/submitQuiz")
+    public ResponseEntity<?> submitQuiz(@PathVariable String quizId, @RequestBody List<Question> questions) {
+        try {
+            // Retrieve the quiz by its ID
+            Quiz quiz = quizService.attemptQuiz(quizId, questions.size());
+
+            // Calculate the grade
+            int correctAnswers = 0;
+            for (Question submittedQuestion : questions) {
+                for (Question quizQuestion : quiz.getQuestions()) {
+                    if (submittedQuestion.getId().equals(quizQuestion.getId()) &&
+                            submittedQuestion.getSubmittedAnswer().equals(quizQuestion.getCorrectAnswer())) {
+                        correctAnswers++;
+                    }
+                }
+            }
+
+            // Calculate the grade as a percentage
+            double grade = (double) correctAnswers / questions.size() * 100;
+
+            // Return the grade as a response
+            return new ResponseEntity<>(grade, HttpStatus.OK);
+        } catch (IllegalArgumentException ex) {
+            // Handle quiz not found exception
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
     // Endpoint to get all quizzes
     @GetMapping
     public List<Quiz> getAllQuizzes() {

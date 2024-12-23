@@ -5,6 +5,7 @@ import com.example.demo.models.Question;
 import com.example.demo.models.Quiz;
 import com.example.demo.models.UserRole;
 import com.example.demo.repository.CourseRepository;
+import com.example.demo.repository.QuestionRepository;
 import com.example.demo.repository.QuizRepository;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,6 +24,9 @@ public class QuizService {
 
     @Autowired
     private CourseRepository courseRepository;
+
+    @Autowired
+    private QuestionRepository questionRepository;
 
     public QuizService(QuizRepository quizRepository, CourseRepository courseRepository) {
         this.quizRepository = quizRepository;
@@ -58,12 +62,18 @@ public class QuizService {
         if(!quizRepository.isQuizIdExist(quizId)) {
             throw new IllegalArgumentException("Quiz with ID " + quizId + " not found.");
         }
+        if(questionRepository.existsById(question.getId())) {
+            throw new IllegalArgumentException("Question with ID " + question.getId() + "already exists.");
+        }
 
         Quiz quiz = quizRepository.findById(quizId);
 
         quiz.addQuestion(question);
+        questionRepository.save(question);
         quizRepository.save(quiz);
     }
+
+
 
     //attempt a quiz
     public Quiz attemptQuiz(String quizId, int noOfQuestions) {

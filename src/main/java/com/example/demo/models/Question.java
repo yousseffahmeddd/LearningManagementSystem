@@ -9,13 +9,16 @@ import java.util.List;
 @Getter
 public class Question {
     // Getters and Setters
+    private String id;
     private String text;
     private QuestionType type;
     private List<String> options; // Only applicable for MCQ
     private String correctAnswer; // For True/False or Short Answer
+    private String submittedAnswer; // For True/False or Short Answer
 
     // Constructor
-    public Question(String text, QuestionType type, List<String> options, String correctAnswer) {
+    public Question(String id,String text, QuestionType type, List<String> options, String correctAnswer) {
+        this.id=id;
         this.text = text;
         this.type = type;
         this.options = options;

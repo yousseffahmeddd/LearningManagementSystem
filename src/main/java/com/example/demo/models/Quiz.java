@@ -15,6 +15,7 @@ public class Quiz {
     private String courseId;
     private String title;
     private List<Question> questions;
+    private List<Question> randomizedQuestions;
 
     public Quiz () {
         this.questions = new ArrayList<>();
@@ -28,9 +29,10 @@ public class Quiz {
         this.questions = new ArrayList<>();
     }
 
-    public void randomizedQuestions(List<Question> questionBank, int numberOfQuestions) {
+    public List<Question> randomizedQuestions(List<Question> questionBank, int numberOfQuestions) {
         Collections.shuffle(questionBank); // Randomize the list
-        this.questions = questionBank.subList(0, Math.min(numberOfQuestions, questionBank.size()));
+        this.randomizedQuestions = questionBank.subList(0, Math.min(numberOfQuestions, questionBank.size()));
+        return this.randomizedQuestions;
     }
 
     public void addQuestion(Question question) {
