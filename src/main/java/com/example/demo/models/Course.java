@@ -20,6 +20,7 @@ public class Course {
     private Integer hours;
     private Long instructorId;
     private List<Question> courseQuestions;
+    private List<Assignment> assignments;
 
     @JsonIgnore
     private List<User> students;

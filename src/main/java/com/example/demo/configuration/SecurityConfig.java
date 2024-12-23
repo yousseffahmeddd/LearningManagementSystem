@@ -40,6 +40,8 @@ public class SecurityConfig {
                                 "/auth/hello", "/auth/profile", "/auth/list", "/auth/{id}", "/api/courses",
                                 "/{courseId}", "/api/lessons", "/api/enrollments", "/course/{courseId}",
                                 "/api/attendance", "/generate-otp", "/submit-otp", "/lesson/{lessonId}/marked","/api/quizzes" , "/api/quizzes/{quizId}/questions", "/api/quizzes/{quizId}/attemptQuiz", "/api/quizzes/{quizId}/submitQuiz"
+                                ,"/api/assignments/create","/api/assignments/{assignmentId}/submit",
+                                "/api/assignments/submissions"
                         ).authenticated()
                 )
                 .httpBasic(withDefaults()).csrf((csrf) -> csrf.disable())

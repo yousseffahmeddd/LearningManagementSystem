@@ -24,6 +24,7 @@ public class CourseController {
     // Create a new course
     @PostMapping
     public ResponseEntity<String> createCourse(
+
             @RequestBody Course course,
             @RequestHeader("User-Role") String role) {
         try {
