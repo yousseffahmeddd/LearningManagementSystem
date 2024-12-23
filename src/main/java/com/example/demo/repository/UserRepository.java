@@ -62,4 +62,8 @@ public class UserRepository {
                 .stream()
                 .anyMatch(user -> user.getEmail().equals(email));
     }
+
+    public void deleteAll() {
+        userMap.clear();
+    }
 }

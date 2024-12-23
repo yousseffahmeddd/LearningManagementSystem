@@ -38,12 +38,14 @@ public class SecurityConfig {
                         .requestMatchers("/auth/login", "/auth/register").permitAll()
                         .requestMatchers(
                                 "/auth/hello", "/auth/profile", "/auth/list", "/auth/{id}", "/api/courses",
-                                "/{courseId}", "/api/lessons", "/api/enrollments", "/course/{courseId}",
-                                "/api/attendance", "/generate-otp", "/submit-otp", "/lesson/{lessonId}/marked","/api/quizzes" , "/api/quizzes/{quizId}/questions", "/api/quizzes/{quizId}/attemptQuiz", "/api/quizzes/{quizId}/submitQuiz"
-                                ,"/api/assignments/create","/api/assignments/{assignmentId}/submit",
+                                "/{courseId}", "/api/lessons", "/api/enrollments", "/api/courses/{courseId}",
+                                "/api/attendance", "/api/attendance/generate-otp", "/api/attendance/submit-otp", "/api/attendance/exportAttendances/{lessonId}",
+                                "/api/attendance/lesson/{lessonId}/marked","/api/quizzes" , "/api/quizzes/{quizId}/questions"
+                                ,"/api/quizzes/{quizId}/attemptQuiz", "/api/quizzes/{quizId}/submitQuiz"
+                                ,"/api/assignments/create","/api/assignments/{assignmentId}/submit", "/api/assignments/exportSubmissions",
                                 "/api/assignments/assignments","/api/assignments/submissions",
-                                "/api/assignments/{assignmentId}/feedback" , "/notifications/{userId}/unread" , "/notifications/{userId}/{notificationId}/read" , "/notifications/{userId}/{notificationId}" , "/notifications/{userId}"
-                                , "/auth/{userId}/notifications/{notificationId}" , "/auth/{userId}/notifications/{notificationId}/read" , "/auth/{userId}/notifications/unread" , "/auth/{userId}/notifications" , "/auth/{userId}/notifications/{notificationId}"
+                                "/api/assignments/{assignmentId}/feedback","/api/quizzes/quizAttempts",
+                                "/api/quizzes/quizAttempts/{studentId}", "/api/quizzes/exportQuizAttempts"
                         ).authenticated()
                 )
                 .httpBasic(withDefaults()).csrf((csrf) -> csrf.disable())

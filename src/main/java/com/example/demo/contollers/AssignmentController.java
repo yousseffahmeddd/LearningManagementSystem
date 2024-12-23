@@ -5,6 +5,7 @@ import com.example.demo.models.Quiz;
 import com.example.demo.models.Submission;
 import com.example.demo.models.UserRole;
 import com.example.demo.service.AssignmentService;
+import com.example.demo.utility.ExcelUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -118,6 +119,7 @@ public class AssignmentController {
             );
         }
     }
+
     @PostMapping("/{assignmentId}/feedback")
     public ResponseEntity<Object> addGradeAndFeedback(
             @RequestHeader("User-Role") String userRole,
@@ -144,6 +146,18 @@ public class AssignmentController {
             return ResponseEntity.status(403).body(
                     Map.of("error", e.getMessage())
             );
+        }
+    }
+
+    @GetMapping("/exportSubmissions")
+    public ResponseEntity<String> exportSubmissions(@RequestHeader("User-Role") String role) {
+        try {
+            UserRole userRole = UserRole.valueOf(role.toUpperCase());
+            List<Submission> submissions = assignmentService.getAllSubmissions(userRole);
+            ExcelUtil.writeSubmissionsToExcel(submissions, "submissions.xlsx");
+            return ResponseEntity.ok("Submissions exported successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error exporting submissions: " + e.getMessage());
         }
     }
 }

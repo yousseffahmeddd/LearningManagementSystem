@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/courses")
@@ -77,9 +78,17 @@ public class CourseController {
 
             return ResponseEntity.ok("Course updated successfully.");
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(400).body("Error: " + e.getMessage());
+            return ResponseEntity.status(400).body(e.getMessage());
         }
     }
 
-
+    @GetMapping("/{courseId}")
+    public ResponseEntity<?> getCourse(@PathVariable String courseId) {
+        try {
+            Optional<Course> course = courseService.getCourseById(courseId);
+            return ResponseEntity.ok(course);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
+    }
 }

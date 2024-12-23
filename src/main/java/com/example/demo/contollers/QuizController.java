@@ -1,9 +1,11 @@
 package com.example.demo.contollers;
 
 import com.example.demo.models.Question;
+import com.example.demo.models.QuizAttempt;
 import com.example.demo.models.UserRole;
 import com.example.demo.service.QuizService;
 import com.example.demo.models.Quiz;
+import com.example.demo.utility.ExcelUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,8 +59,14 @@ public class QuizController {
     }
 
     @PostMapping("/{quizId}/submitQuiz")
-    public ResponseEntity<?> submitQuiz(@PathVariable String quizId, @RequestBody List<Question> questions) {
+    public ResponseEntity<?> submitQuiz(@PathVariable String quizId, @RequestBody List<Question> questions,@RequestHeader("User-Role") String role,@RequestHeader("Student-Id") String studentId) {
         try {
+            UserRole userRole = UserRole.valueOf(role.toUpperCase());
+
+            if(userRole != UserRole.STUDENT) {
+                return new ResponseEntity<>("Only students can submit quizzes.", HttpStatus.FORBIDDEN);
+            }
+
             // Retrieve the quiz by its ID
             Quiz quiz = quizService.attemptQuiz(quizId, questions.size());
 
@@ -76,10 +84,46 @@ public class QuizController {
             // Calculate the grade as a percentage
             double grade = (double) correctAnswers / questions.size() * 100;
 
+            QuizAttempt quizAttempt = new QuizAttempt();
+
+            quizAttempt.setQuizId(quizId);
+            quizAttempt.setStudentId(studentId);
+            quizAttempt.setGrade(grade);
+            quizService.saveQuizAttempt(quizAttempt);
+
+
             // Return the grade as a response
             return new ResponseEntity<>(grade, HttpStatus.OK);
         } catch (IllegalArgumentException ex) {
             // Handle quiz not found exception
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/quizAttempts")
+    public ResponseEntity<?> getQuizAttempts(@RequestHeader("User-Role") String role) {
+        try {
+            UserRole userRole = UserRole.valueOf(role.toUpperCase());
+            if (userRole != UserRole.INSTRUCTOR) {
+                return new ResponseEntity<>("Only instructors can view all quiz attempts.", HttpStatus.FORBIDDEN);
+            }
+            return new ResponseEntity<>(quizService.getAllQuizAttempts(), HttpStatus.OK);
+        } catch (IllegalArgumentException ex) {
+            // Handle student not found exception
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/quizAttempts/{studentId}")
+    public ResponseEntity<?> getQuizAttemptsByStudent(@PathVariable String studentId, @RequestHeader("User-Role") String role) {
+        try {
+            UserRole userRole = UserRole.valueOf(role.toUpperCase());
+            if (userRole != UserRole.INSTRUCTOR) {
+                return new ResponseEntity<>("Only instructors can view quiz attempts.", HttpStatus.FORBIDDEN);
+            }
+            List<QuizAttempt> attempts = quizService.getQuizAttemptsByStudentId(studentId);
+            return new ResponseEntity<>(attempts, HttpStatus.OK);
+        } catch (IllegalArgumentException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
@@ -90,5 +134,15 @@ public class QuizController {
         return quizService.getAllQuizzes();
     }
 
-
+    @GetMapping("/exportQuizAttempts")
+    public ResponseEntity<String> exportQuizAttempts(@RequestHeader("User-Role") String role) {
+        try {
+            UserRole userRole = UserRole.valueOf(role.toUpperCase());
+            List<QuizAttempt> quizAttempts = quizService.getAllQuizAttempts();
+            ExcelUtil.writeQuizAttemptsToExcel(quizAttempts, "quiz_attempts.xlsx");
+            return ResponseEntity.ok("Quiz attempts exported successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error exporting quiz attempts: " + e.getMessage());
+        }
+    }
 }
