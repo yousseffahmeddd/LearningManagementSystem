@@ -38,6 +38,9 @@ public class UserController {
         if (service.userIdExists(userInfo.getId())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("User ID already exists: " + userInfo.getId());
         }
+        if (service.userEmailExists(userInfo.getEmail())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Email already exists: " + userInfo.getEmail());
+        }
         String response = service.addUser(userInfo);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

@@ -38,8 +38,9 @@ public class SecurityConfig {
                         .requestMatchers("/auth/login", "/auth/register").permitAll()
                         .requestMatchers(
                                 "/auth/hello", "/auth/profile", "/auth/list", "/auth/{id}", "/api/courses",
-                                "/{courseId}", "/api/lessons", "/api/enrollments", "/course/{courseId}",
-                                "/api/attendance", "/generate-otp", "/submit-otp", "/lesson/{lessonId}/marked","/api/quizzes" , "/api/quizzes/{quizId}/questions"
+                                "/{courseId}", "/api/lessons", "/api/enrollments", "/api/courses/{courseId}",
+                                "/api/attendance", "/api/attendance/generate-otp", "/api/attendance/submit-otp",
+                                "/api/attendance/lesson/{lessonId}/marked","/api/quizzes" , "/api/quizzes/{quizId}/questions"
                                 ,"/api/quizzes/{quizId}/attemptQuiz", "/api/quizzes/{quizId}/submitQuiz"
                                 ,"/api/assignments/create","/api/assignments/{assignmentId}/submit",
                                 "/api/assignments/assignments","/api/assignments/submissions",

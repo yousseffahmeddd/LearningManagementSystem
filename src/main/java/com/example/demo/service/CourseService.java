@@ -60,6 +60,10 @@ public class CourseService {
         return courseRepository.findAll();
     }
 
+    public Optional<Course> getCourseById(String courseId) {
+        return courseRepository.findById(courseId);
+    }
+
     public void deleteCourse(UserRole role, String courseId) {
         if (!isAdmin(role)) {
             throw new IllegalArgumentException("Only Admins can delete courses.");

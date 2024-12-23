@@ -58,6 +58,10 @@ public class UserService implements org.springframework.security.core.userdetail
         return userRepository.existsById(id);
     }
 
+    public boolean userEmailExists(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
     // src/main/java/com/example/demo/service/UserService.java
     public boolean userExists(String username) {
         return userRepository.findByUsername(username) != null;
