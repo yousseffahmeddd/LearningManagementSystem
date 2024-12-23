@@ -67,17 +67,17 @@ public class AssignmentController {
             @PathVariable String assignmentId,
             @RequestParam("file") MultipartFile file) {
 
-
         try {
-
             if (!userRole.equalsIgnoreCase("STUDENT")) {
                 return ResponseEntity.status(403).body(
                         Map.of("error", "Only students are allowed to submit assignments.")
                 );
             }
 
-            // Proceed with the submission if role is valid
-            Submission submission = assignmentService.submitAssignmentWithSequentialId(studentId, assignmentId, file);            return ResponseEntity.ok(submission);
+            // Use the submitAssignment method directly for handling the submission
+            Submission submission = assignmentService.submitAssignment(studentId, assignmentId, file);
+
+            return ResponseEntity.ok(submission);
 
         } catch (IllegalArgumentException e) {
             // Handle other possible errors
@@ -86,8 +86,8 @@ public class AssignmentController {
             );
         }
     }
-    @GetMapping("/submissions")
-    public List<Assignment> getAllQuizzes() {
+    @GetMapping("/assignments")
+    public List<Assignment> getAllAssignments() {
         return AssignmentService.getAllassignments();
     }
 }

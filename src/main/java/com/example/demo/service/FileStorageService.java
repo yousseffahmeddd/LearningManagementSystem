@@ -13,17 +13,32 @@ public class FileStorageService {
     private static final String UPLOAD_DIR = "uploads/";
 
     public String uploadFile(MultipartFile file) {
+        String fileName = file.getOriginalFilename();
+
+        // Ensure file name is not null
+        if (fileName == null) {
+            throw new IllegalArgumentException("Invalid file name");
+        }
+
+        // Determine target file path
+        Path targetLocation = Paths.get("uploads").resolve(fileName);
+
         try {
-            Path uploadDir = Paths.get(UPLOAD_DIR);
-            if (!Files.exists(uploadDir)) {
-                Files.createDirectories(uploadDir);
+            // Check if the file already exists
+            if (Files.exists(targetLocation)) {
+                // Append a unique identifier to avoid overwriting
+                String uniqueFileName = System.currentTimeMillis() + "_" + fileName;
+                targetLocation = Paths.get("uploads").resolve(uniqueFileName);
             }
-            String fileName = file.getOriginalFilename();
-            Path filePath = uploadDir.resolve(fileName);
-            Files.copy(file.getInputStream(), filePath);
-            return filePath.toString();
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to upload file", e);
+
+            // Save the file to the target location
+            Files.copy(file.getInputStream(), targetLocation);
+
+            // Return the stored file's URI or file name
+            return targetLocation.toString();
+
+        } catch (IOException ex) {
+            throw new RuntimeException("Failed to store file " + fileName, ex);
         }
     }
 }

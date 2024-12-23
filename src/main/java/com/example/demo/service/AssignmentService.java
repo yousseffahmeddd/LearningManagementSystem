@@ -71,12 +71,12 @@ public class AssignmentService {
         if (!assignmentRepository.existsById(assignmentId)) {
             throw new IllegalArgumentException("Assignment with ID " + assignmentId + " does not exist.");
         }
-
+        int newId = submissionIdCounter.getAndIncrement();
         // Save file
         String fileUrl = fileStorageService.uploadFile(file);
 
         Submission submission = new Submission();
-        submission.setId(UUID.randomUUID().toString());
+        submission.setId(String.valueOf(newId));
         submission.setAssignmentId(assignmentId);
         submission.setStudentId(studentId);
         submission.setFileName(file.getOriginalFilename());
@@ -85,20 +85,6 @@ public class AssignmentService {
         return submissionRepository.save(submission);
     }
 
-    public List<Submission> getSubmissionsForAssignment(String assignmentId, UserRole role) {
-        // Validate the role to allow only authorized users
-        if (role != UserRole.INSTRUCTOR && role != UserRole.ADMIN) {
-            throw new IllegalArgumentException("Only instructors or admins can view submissions.");
-        }
-
-        // Debugging: Print all existing submissions
-        List<Submission> allSubmissions = submissionRepository.findAllSubmissions();
-        System.out.println("All Submissions:");
-        allSubmissions.forEach(submission -> System.out.println(submission));
-
-        // Return submissions for a specific assignment id
-        return submissionRepository.findByAssignmentId(assignmentId);
-    }
     public List<Assignment> getAllassignments() {
         return assignmentRepository.findAll();
     }
