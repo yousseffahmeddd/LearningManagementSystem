@@ -102,4 +102,14 @@ public class QuizService {
     public List<QuizAttempt> getAllQuizAttempts() {
         return quizAttempts;
     }
+
+    public List<QuizAttempt> getQuizAttemptsByStudentId(String studentId) {
+        List<QuizAttempt> studentQuizAttempts = new ArrayList<>();
+        for (QuizAttempt quizAttempt : quizAttempts) {
+            if (quizAttempt.getStudentId().equals(studentId)) {
+                studentQuizAttempts.add(quizAttempt);
+            }
+        }
+        return studentQuizAttempts;
+    }
 }

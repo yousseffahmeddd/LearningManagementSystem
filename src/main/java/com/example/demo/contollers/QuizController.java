@@ -113,6 +113,20 @@ public class QuizController {
         }
     }
 
+    @GetMapping("/quizAttempts/{studentId}")
+    public ResponseEntity<?> getQuizAttemptsByStudent(@PathVariable String studentId, @RequestHeader("User-Role") String role) {
+        try {
+            UserRole userRole = UserRole.valueOf(role.toUpperCase());
+            if (userRole != UserRole.INSTRUCTOR) {
+                return new ResponseEntity<>("Only instructors can view quiz attempts.", HttpStatus.FORBIDDEN);
+            }
+            List<QuizAttempt> attempts = quizService.getQuizAttemptsByStudentId(studentId);
+            return new ResponseEntity<>(attempts, HttpStatus.OK);
+        } catch (IllegalArgumentException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
     // Endpoint to get all quizzes
     @GetMapping
     public List<Quiz> getAllQuizzes() {

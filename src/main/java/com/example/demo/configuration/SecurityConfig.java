@@ -43,7 +43,8 @@ public class SecurityConfig {
                                 ,"/api/quizzes/{quizId}/attemptQuiz", "/api/quizzes/{quizId}/submitQuiz"
                                 ,"/api/assignments/create","/api/assignments/{assignmentId}/submit",
                                 "/api/assignments/assignments","/api/assignments/submissions",
-                                "/api/assignments/{assignmentId}/feedback","/api/quizzes/quizAttempts"
+                                "/api/assignments/{assignmentId}/feedback","/api/quizzes/quizAttempts",
+                                "/api/quizzes/quizAttempts/{studentId}"
                         ).authenticated()
                 )
                 .httpBasic(withDefaults()).csrf((csrf) -> csrf.disable())
