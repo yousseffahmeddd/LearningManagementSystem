@@ -1,76 +1,115 @@
 package com.example.demo.repository;
 import com.example.demo.models.Attendance;
 
+import com.example.demo.models.Lesson;
+import com.example.demo.models.User;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
+
 
 @Repository
 public class AttendanceRepository {
 
     private final List<Attendance> attendanceRecords = new ArrayList<>();
 
-    // Save OTP for a lesson
-    public void saveOtp(Long lessonId, String otp) {
+    public void saveOtp(Lesson lesson, User instructor, String otp) {
+        if (lesson == null) {
+            throw new IllegalArgumentException("Lesson cannot be null.");
+        }
+
         boolean otpExists = attendanceRecords.stream()
-                .anyMatch(attendance -> attendance.getLessonId().equals(lessonId) && attendance.getOtp() != null);
+                .anyMatch(record -> record.getLessonId().equals(lesson.getId()) && record.getOtp().equals(otp));
 
         if (!otpExists) {
-            Attendance lessonOtp = new Attendance(lessonId, null, otp); // studentId is null here
+            Attendance lessonOtp = new Attendance(lesson, null, otp);
             attendanceRecords.add(lessonOtp);
         }
     }
-    // Get OTP for a lesson
-    public String getOtpForLesson(Long lessonId) {
+
+
+    public boolean otpExists(Lesson lesson) {
         return attendanceRecords.stream()
-                .filter(attendance -> attendance.getLessonId().equals(lessonId) && attendance.getOtp() != null)
-                .map(Attendance::getOtp)
-                .findFirst()
-                .orElse(null);  // Returns null if no OTP is found for the lesson
+                .anyMatch(record -> record.getLessonId().equals(lesson.getId()) && !record.isMarked());
     }
 
-    // Check if OTP exists for a specific lessonId
-    public boolean otpExists(Long lessonId) {
+    public String getOtpForLesson(Lesson lesson) {
         return attendanceRecords.stream()
-                .anyMatch(attendance -> attendance.getLessonId().equals(lessonId) && attendance.getOtp() != null);
-    }
-
-    // Validate OTP for a specific lesson
-    public boolean validateOtp(Long lessonId, String otp) {
-        return attendanceRecords.stream()
-                .anyMatch(attendance -> attendance.getLessonId().equals(lessonId) &&
-                        otp.equals(attendance.getOtp()));
-    }
-
-    // Mark attendance for a student
-    public boolean markAttendance(Long lessonId, Long studentId) {
-        // Check if OTP exists for the lesson
-        String lessonOtp = attendanceRecords.stream()
-                .filter(attendance -> attendance.getLessonId().equals(lessonId) && attendance.getOtp() != null)
+                .filter(record -> record.getLessonId().equals(lesson.getId()) && !record.isMarked())
                 .map(Attendance::getOtp)
                 .findFirst()
                 .orElse(null);
-
-        if (lessonOtp != null) {
-            // Add a new record for the student with the same OTP
-            Attendance studentAttendance = new Attendance(lessonId, studentId, lessonOtp);
-            studentAttendance.setMarked(true);
-            attendanceRecords.add(studentAttendance);
-            return true;
-        }
-        return false; // Lesson OTP does not exist
     }
 
-    // Get all marked attendances for a specific lesson
-    public List<Attendance> getMarkedAttendancesByLessonId(Long lessonId) {
+    public boolean validateOtp(Lesson lesson, String otp) {
         return attendanceRecords.stream()
-                .filter(attendance -> attendance.getLessonId().equals(lessonId) && attendance.isMarked())
-                .collect(Collectors.toList());
+                .anyMatch(record -> record.getLessonId().equals(lesson.getId()) && record.getOtp().equals(otp) && !record.isMarked());
     }
 
-    // Get all attendance records
+/*
+    public boolean markAttendance(Lesson lesson, User student, String otp) {
+        // Validate OTP
+        boolean isValidOtp = attendanceRecords.stream()
+                .anyMatch(record -> record.getLessonId().equals(lesson.getId())
+                        && record.getOtp().equals(otp)
+                        && !record.isMarked());
+        if (!isValidOtp) {
+            return false;
+        }
+
+        // Create a new attendance record for the student
+        Attendance newAttendance = new Attendance(lesson, student, otp);
+        newAttendance.setStudentId(student.getId());
+        newAttendance.setMarked(true);
+
+        attendanceRecords.add(newAttendance);
+        return true;
+    }
+*/
+
+    public boolean markAttendance(Lesson lesson, User student, String otp) {
+        if (lesson == null || student == null || otp == null) {
+            throw new IllegalArgumentException("Lesson, Student, and OTP cannot be null.");
+        }
+
+        // Check if the student has already marked attendance for this lesson
+        boolean isAlreadyMarked = attendanceRecords.stream()
+                .anyMatch(record -> record.getLessonId().equals(lesson.getId())
+                        && record.getStudentId() != null
+                        && record.getStudentId().equals(student.getId())
+                        && record.isMarked());
+        if (isAlreadyMarked) {
+            return false;
+        }
+
+        // Validate OTP
+        boolean isValidOtp = attendanceRecords.stream()
+                .anyMatch(record -> record.getLessonId().equals(lesson.getId())
+                        && record.getOtp().equals(otp)
+                        && !record.isMarked());
+        if (!isValidOtp) {
+            return false;
+        }
+
+        // Mark attendance
+        Attendance newAttendance = new Attendance(lesson, student, otp);
+        newAttendance.setStudentId(student.getId());
+        newAttendance.setMarked(true);
+
+        attendanceRecords.add(newAttendance);
+        return true;
+    }
+
+
+
+    public List<Attendance> getMarkedAttendancesByLesson(Lesson lesson) {
+        return attendanceRecords.stream()
+                .filter(record -> record.getLessonId().equals(lesson.getId()) && record.isMarked())
+                .toList();
+    }
+
     public List<Attendance> findAll() {
         return new ArrayList<>(attendanceRecords);
     }

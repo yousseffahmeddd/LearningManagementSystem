@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class LessonRepository {
@@ -17,6 +18,10 @@ public class LessonRepository {
         Lesson lesson = new Lesson(++nextId, courseId, title, instructorId);
         lessons.put(lesson.getId(), lesson);
         return lesson;
+    }
+
+    public Optional<Lesson> findById(Long id) {
+        return Optional.ofNullable(lessons.get(id));
     }
 
     public Collection<Lesson> findAll() {

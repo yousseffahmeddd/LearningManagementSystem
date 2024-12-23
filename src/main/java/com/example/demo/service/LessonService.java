@@ -27,32 +27,31 @@ public class LessonService {
         this.courseRepository = courseRepository;
         this.userRepository = userRepository;
     }
-
     public void createLesson(String courseId, String title, UserRole role, Long instructorId) {
         if (!isInstructor(role)) {
             throw new IllegalArgumentException("Only Instructors can create lessons.");
+        }
+
+        Optional<User> instructorOptional = userRepository.findById(instructorId);
+        if (instructorOptional.isEmpty() || instructorOptional.get().getRole() != UserRole.INSTRUCTOR) {
+            throw new IllegalArgumentException("Instructor not found or user is not an instructor.");
+        }
+
+        Optional<Course> courseOptional = courseRepository.findById(courseId);
+        if (courseOptional.isEmpty()) {
+            throw new IllegalArgumentException("Course not found.");
+        }
+
+        Course course = courseOptional.get();
+        if (!course.getInstructorId().equals(instructorId)) {
+            throw new IllegalArgumentException("Instructor ID does not match the course instructor.");
         }
 
         if (lessonRepository.existsByTitleAndCourseId(title, courseId)) {
             throw new IllegalArgumentException("A lesson with this title already exists in the course.");
         }
 
-        // Check if the instructor exists
-        if (!userRepository.existsById(instructorId)) {
-            throw new IllegalArgumentException("Instructor not found.");
-        }
-
-        // Check if the course exists
-        Optional<Course> courseOptional = courseRepository.findById(courseId);
-        if (courseOptional.isEmpty()) {
-            throw new IllegalArgumentException("Course not found.");
-        }
-
-        // Save the lesson using the parameters
         Lesson lesson = lessonRepository.save(courseId, title, instructorId);
-
-        // Add the lesson to the course
-        Course course = courseOptional.get();
         course.getLessons().add(lesson);
         courseRepository.save(course);
     }
