@@ -1,6 +1,8 @@
 package com.example.demo.contollers;
 
 import com.example.demo.models.Course;
+import com.example.demo.models.Notification;
+import com.example.demo.service.NotificationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,11 +24,13 @@ public class UserController {
     private final UserService service;
     private final JWTService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final NotificationService notificationService;
 
-    public UserController(UserService service, JWTService jwtService, AuthenticationManager authenticationManager) {
+    public UserController(UserService service, JWTService jwtService, AuthenticationManager authenticationManager, NotificationService notificationService) {
         this.service = service;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
+        this.notificationService = notificationService;
     }
 
     // src/main/java/com/example/demo/contollers/UserController.java
@@ -109,5 +113,35 @@ public class UserController {
     public ResponseEntity<List<Course>> getEnrolledCourses(@PathVariable Long studentId) {
         List<Course> courses = service.getEnrolledCourses(studentId);
         return ResponseEntity.ok(courses);
+    }
+
+    @PostMapping("/{userId}/notifications")
+    public ResponseEntity<String> createNotification(@PathVariable Long userId, @RequestBody String message) {
+        notificationService.createNotification(userId, message);
+        return ResponseEntity.ok("Notification created successfully!");
+    }
+
+    @GetMapping("/{userId}/notifications")
+    public ResponseEntity<List<Notification>> getNotifications(@PathVariable Long userId) {
+        List<Notification> notifications = notificationService.getNotificationsByUserId(userId);
+        return ResponseEntity.ok(notifications);
+    }
+
+    @PutMapping("/{userId}/notifications/{notificationId}/read")
+    public ResponseEntity<String> markNotificationAsRead(@PathVariable Long userId, @PathVariable Long notificationId) {
+        notificationService.markAsRead(userId, notificationId);
+        return ResponseEntity.ok("Notification marked as read.");
+    }
+
+    @DeleteMapping("/{userId}/notifications/{notificationId}")
+    public ResponseEntity<String> deleteNotification(@PathVariable Long userId, @PathVariable Long notificationId) {
+        notificationService.deleteNotification(userId, notificationId);
+        return ResponseEntity.ok("Notification deleted.");
+    }
+
+    @DeleteMapping("/{userId}/notifications")
+    public ResponseEntity<String> deleteAllNotifications(@PathVariable Long userId) {
+        notificationService.deleteAllNotifications(userId);
+        return ResponseEntity.ok("All notifications deleted.");
     }
 }

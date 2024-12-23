@@ -42,7 +42,8 @@ public class SecurityConfig {
                                 "/api/attendance", "/generate-otp", "/submit-otp", "/lesson/{lessonId}/marked","/api/quizzes" , "/api/quizzes/{quizId}/questions", "/api/quizzes/{quizId}/attemptQuiz", "/api/quizzes/{quizId}/submitQuiz"
                                 ,"/api/assignments/create","/api/assignments/{assignmentId}/submit",
                                 "/api/assignments/assignments","/api/assignments/submissions",
-                                "/api/assignments/{assignmentId}/feedback"
+                                "/api/assignments/{assignmentId}/feedback" , "/notifications/{userId}/unread" , "/notifications/{userId}/{notificationId}/read" , "/notifications/{userId}/{notificationId}" , "/notifications/{userId}"
+                                , "/auth/{userId}/notifications/{notificationId}" , "/auth/{userId}/notifications/{notificationId}/read" , "/auth/{userId}/notifications/unread" , "/auth/{userId}/notifications" , "/auth/{userId}/notifications/{notificationId}"
                         ).authenticated()
                 )
                 .httpBasic(withDefaults()).csrf((csrf) -> csrf.disable())

@@ -14,17 +14,24 @@ public class User {
     private UserRole role;
     private List<CourseDTO> courses;
     private List<Lesson> lessons;
+    private List<Notification> notifications;
 
 
+    public List<Notification> getNotifications() {
+        return notifications;
+    }
 
-
+    public void setNotifications(List<Notification> notifications) {
+        this.notifications = notifications;
+    }
 
     public User() {
         this.courses = new ArrayList<>();
         this.lessons = new ArrayList<>();
+        this.notifications = new ArrayList<>();
     }
 
-    public User(Long id, String username, String password, String email, UserRole role, List<CourseDTO> courses, List<Lesson> lessons) {
+    public User(Long id, String username, String password, String email, UserRole role, List<CourseDTO> courses, List<Lesson> lessons , List<Notification> notifications) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -32,6 +39,7 @@ public class User {
         this.role = role;
         this.courses = courses != null ? courses : new ArrayList<>();
         this.lessons = lessons != null ? lessons : new ArrayList<>();
+        this.notifications = notifications != null ? notifications : new ArrayList<>();
     }
 
     public Long getId() {
