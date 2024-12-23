@@ -3,6 +3,7 @@ package com.example.demo.contollers;
 import com.example.demo.models.Attendance;
 import com.example.demo.models.UserRole;
 import com.example.demo.service.AttendanceService;
+import com.example.demo.utility.ExcelUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -78,6 +79,19 @@ public class AttendanceController {
             return ResponseEntity.ok(attendances);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(400).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/exportAttendances/{lessonId}")
+    public ResponseEntity<String> exportAttendances(@PathVariable Long lessonId,
+                                                    @RequestHeader("User-Role") String role) {
+        try {
+            UserRole userRole = UserRole.valueOf(role.toUpperCase());
+            List<Attendance> attendances = attendanceService.getMarkedAttendances(lessonId, userRole);
+            ExcelUtil.writeAttendancesToExcel(attendances, "attendances.xlsx");
+            return ResponseEntity.ok("Attendances exported successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error exporting attendances: " + e.getMessage());
         }
     }
 }

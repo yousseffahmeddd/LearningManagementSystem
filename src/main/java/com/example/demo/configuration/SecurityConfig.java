@@ -39,13 +39,13 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/auth/hello", "/auth/profile", "/auth/list", "/auth/{id}", "/api/courses",
                                 "/{courseId}", "/api/lessons", "/api/enrollments", "/api/courses/{courseId}",
-                                "/api/attendance", "/api/attendance/generate-otp", "/api/attendance/submit-otp",
+                                "/api/attendance", "/api/attendance/generate-otp", "/api/attendance/submit-otp", "/api/attendance/exportAttendances/{lessonId}",
                                 "/api/attendance/lesson/{lessonId}/marked","/api/quizzes" , "/api/quizzes/{quizId}/questions"
                                 ,"/api/quizzes/{quizId}/attemptQuiz", "/api/quizzes/{quizId}/submitQuiz"
-                                ,"/api/assignments/create","/api/assignments/{assignmentId}/submit",
+                                ,"/api/assignments/create","/api/assignments/{assignmentId}/submit", "/api/assignments/exportSubmissions",
                                 "/api/assignments/assignments","/api/assignments/submissions",
                                 "/api/assignments/{assignmentId}/feedback","/api/quizzes/quizAttempts",
-                                "/api/quizzes/quizAttempts/{studentId}"
+                                "/api/quizzes/quizAttempts/{studentId}", "/api/quizzes/exportQuizAttempts"
                         ).authenticated()
                 )
                 .httpBasic(withDefaults()).csrf((csrf) -> csrf.disable())

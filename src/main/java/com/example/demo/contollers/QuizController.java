@@ -5,6 +5,7 @@ import com.example.demo.models.QuizAttempt;
 import com.example.demo.models.UserRole;
 import com.example.demo.service.QuizService;
 import com.example.demo.models.Quiz;
+import com.example.demo.utility.ExcelUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -133,5 +134,15 @@ public class QuizController {
         return quizService.getAllQuizzes();
     }
 
-
+    @GetMapping("/exportQuizAttempts")
+    public ResponseEntity<String> exportQuizAttempts(@RequestHeader("User-Role") String role) {
+        try {
+            UserRole userRole = UserRole.valueOf(role.toUpperCase());
+            List<QuizAttempt> quizAttempts = quizService.getAllQuizAttempts();
+            ExcelUtil.writeQuizAttemptsToExcel(quizAttempts, "quiz_attempts.xlsx");
+            return ResponseEntity.ok("Quiz attempts exported successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error exporting quiz attempts: " + e.getMessage());
+        }
+    }
 }
