@@ -1,17 +1,18 @@
 package com.example.demo.models;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Notification {
     private Long id;
     private String message;
-    private LocalDateTime timestamp;
+    private LocalDate timestamp;
     private boolean isRead;
     private Long userId; // Reference to the user this notification belongs to
 
     public Notification() {}
 
-    public Notification(Long id, String message, LocalDateTime timestamp, boolean isRead, Long userId) {
+    public Notification(Long id, String message, LocalDate timestamp, boolean isRead, Long userId) {
         this.id = id;
         this.message = message;
         this.timestamp = timestamp;
@@ -35,11 +36,11 @@ public class Notification {
         this.message = message;
     }
 
-    public LocalDateTime getTimestamp() {
+    public LocalDate getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(LocalDateTime timestamp) {
+    public void setTimestamp(LocalDate timestamp) {
         this.timestamp = timestamp;
     }
 

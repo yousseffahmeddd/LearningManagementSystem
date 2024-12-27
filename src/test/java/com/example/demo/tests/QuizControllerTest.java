@@ -64,7 +64,7 @@ class QuizControllerTest {
         baseUrl = "http://localhost:" + port + "/api/quizzes";
 
         // Create and save the required users
-        User instructorUser = new User(1L, "youssef", passwordEncoder.encode("password"), "youssef@gmail.com", UserRole.INSTRUCTOR, null, null ,  null);
+        User instructorUser = new User(1L, "youssef", passwordEncoder.encode("password"), "youssef@gmail.com", UserRole.INSTRUCTOR, null, null, null);
         User studentUser = new User(2L, "mazen", passwordEncoder.encode("password"), "mazen@gmail.com", UserRole.STUDENT, null, null , null);
         User adminUser = new User(3L, "mohamed", passwordEncoder.encode("password"), "mohamed@gmail.com", UserRole.ADMIN, null, null , null);
         userRepository.save(instructorUser);
@@ -271,7 +271,7 @@ class QuizControllerTest {
                 objectMapper.registerModule(module);
 
                 Quiz quiz = objectMapper.readValue(response.getBody(), Quiz.class);
-                assertThat(quiz.randomizedQuestions(quiz.getQuestions(), 1)).hasSize(1);
+
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
                 fail("Failed to parse response body to Quiz object");

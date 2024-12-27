@@ -15,12 +15,15 @@ public class EnrollmentService {
     private final EnrollmentRepository enrollmentRepository;
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
+
 
     @Autowired
-    public EnrollmentService(EnrollmentRepository enrollmentRepository, CourseRepository courseRepository, UserRepository userRepository) {
+    public EnrollmentService(EnrollmentRepository enrollmentRepository, CourseRepository courseRepository, UserRepository userRepository, NotificationService notificationService) {
         this.enrollmentRepository = enrollmentRepository;
         this.courseRepository = courseRepository;
         this.userRepository = userRepository;
+        this.notificationService = notificationService;
     }
 
     public void enrollStudent(String courseId, Long studentId, UserRole role) {
@@ -59,6 +62,13 @@ public class EnrollmentService {
 
         // Save the enrollment
         enrollmentRepository.save(courseId, studentId);
+
+
+        // Send notification to the student
+        notificationService.createNotification(studentId, "You have successfully enrolled in the course: " + course.getTitle());
+
+        // Send notification to the instructor
+        notificationService.createNotification(course.getInstructorId(), "Student " + student.getUsername() + "with ID: " + student.getId() + " has enrolled in your course: " + course.getTitle());
     }
 
     // Get all enrollments for a specific course

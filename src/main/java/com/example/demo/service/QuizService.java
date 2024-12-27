@@ -34,16 +34,16 @@ public class QuizService {
     }
 
     // Method to create a quiz
-    public Quiz createQuiz(UserRole role ,Quiz quiz) {
-        if(!isInstructor(role)) {
+    public Quiz createQuiz(UserRole role, Quiz quiz) {
+        if (!isInstructor(role)) {
             throw new IllegalArgumentException("Only Instructors can create quizzes.");
         }
 
-        if(!courseRepository.existsById(quiz.getCourseId())) {
+        if (!courseRepository.existsById(quiz.getCourseId())) {
             throw new IllegalArgumentException("No course with ID " + quiz.getCourseId() + " exists.");
         }
 
-        if(quizRepository.isQuizIdExist(quiz.getId())) {
+        if (quizRepository.isQuizIdExist(quiz.getId())) {
             throw new IllegalArgumentException("A quiz with this ID already exists.");
         }
 
@@ -56,13 +56,13 @@ public class QuizService {
 
 
     public void addQuestion(UserRole role, String quizId, Question question) {
-        if(!isInstructor(role)) {
+        if (!isInstructor(role)) {
             throw new IllegalArgumentException("Only Instructors can add questions to quizzes.");
         }
-        if(!quizRepository.isQuizIdExist(quizId)) {
+        if (!quizRepository.isQuizIdExist(quizId)) {
             throw new IllegalArgumentException("Quiz with ID " + quizId + " not found.");
         }
-        if(questionRepository.existsById(question.getId())) {
+        if (questionRepository.existsById(question.getId())) {
             throw new IllegalArgumentException("Question with ID " + question.getId() + "already exists.");
         }
 
@@ -71,22 +71,22 @@ public class QuizService {
         quiz.addQuestion(question);
         questionRepository.save(question);
         quizRepository.save(quiz);
-    }
 
+    }
 
 
     //attempt a quiz
     public Quiz attemptQuiz(String quizId, int noOfQuestions) {
-        if(!quizRepository.isQuizIdExist(quizId)) {
+        if (!quizRepository.isQuizIdExist(quizId)) {
             throw new IllegalArgumentException("Quiz with ID " + quizId + " not found.");
         }
 
         Quiz quiz = quizRepository.findById(quizId);
 
-        Course course = courseRepository.findById(quiz.getCourseId())
+        courseRepository.findById(quiz.getCourseId())
                 .orElseThrow(() -> new IllegalArgumentException("Course with ID " + quiz.getCourseId() + " not found."));
+        quiz.randomizedQuestions(noOfQuestions);
 
-        quiz.randomizedQuestions(course.getCourseQuestions() ,noOfQuestions);
         return quiz;
     }
 

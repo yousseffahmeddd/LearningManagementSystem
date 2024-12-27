@@ -6,6 +6,7 @@ import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +36,7 @@ public class NotificationService {
 
         Notification notification = new Notification();
         notification.setMessage(message);
-        notification.setTimestamp(LocalDateTime.now());
+        notification.setTimestamp(LocalDate.now());
         notification.setRead(false);
         notification.setUserId(userId);
 
@@ -79,6 +80,17 @@ public class NotificationService {
         notificationRepository.save(notification);
     }
 
+    public void markAllAsRead(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        List<Notification> notifications = user.getNotifications();
+        for (Notification notification : notifications) {
+            notification.setRead(true);
+            notificationRepository.save(notification);
+        }
+    }
+
 
     // Delete all notifications for a user
     public void deleteAllNotifications(Long userId) {
@@ -118,6 +130,8 @@ public class NotificationService {
         // Save the user to persist changes
         userRepository.save(user);
     }
+
+
 
 
 }

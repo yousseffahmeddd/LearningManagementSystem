@@ -41,6 +41,13 @@ public class NotificationController {
         return ResponseEntity.ok("Notification marked as read.");
     }
 
+
+    @PutMapping("/{userId}/readAll")
+    public ResponseEntity<String> markAllAsRead(@PathVariable Long userId) {
+        notificationService.markAllAsRead(userId);
+        return ResponseEntity.ok("All notifications marked as read.");
+    }
+
     @DeleteMapping("/{userId}")
     public ResponseEntity<String> deleteAllNotifications(@PathVariable Long userId) {
         notificationService.deleteAllNotifications(userId);
@@ -52,4 +59,6 @@ public class NotificationController {
         notificationService.deleteNotification(userId, notificationId);
         return ResponseEntity.ok("Notification deleted.");
     }
+
+
 }

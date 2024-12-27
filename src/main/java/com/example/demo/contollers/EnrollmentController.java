@@ -46,6 +46,7 @@ public class EnrollmentController {
         }
     }
 
+
     @GetMapping("/course/{courseId}")
     public ResponseEntity<Collection<Enrollment>> listEnrollmentsByCourse(@PathVariable String courseId) {
         return ResponseEntity.ok(enrollmentService.getEnrollmentsByCourseId(courseId));

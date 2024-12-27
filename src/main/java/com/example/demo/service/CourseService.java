@@ -15,11 +15,14 @@ import java.util.Optional;
 public class CourseService {
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
+
 
     @Autowired
-    public CourseService(CourseRepository courseRepository, UserRepository userRepository) {
+    public CourseService(CourseRepository courseRepository, UserRepository userRepository, NotificationService notificationService) {
         this.courseRepository = courseRepository;
         this.userRepository = userRepository;
+        this.notificationService = notificationService;
     }
 
     public Course createCourse(UserRole role, String title, String description, Integer hours, String courseId, Long instructorId) {
@@ -76,7 +79,7 @@ public class CourseService {
         courseRepository.delete(courseId);
     }
 
-    public void updateCourse(String id, Course updatedCourse, UserRole role) {
+    /*public void updateCourse(String id, Course updatedCourse, UserRole role) {
         if (!isInstructorOrAdmin(role)) {
             throw new IllegalArgumentException("Only Instructors or Admins can update courses.");
         }
@@ -97,6 +100,47 @@ public class CourseService {
 
         courseRepository.delete(id);
         courseRepository.save(updatedCourse);
+
+        // Notify students about the course update
+        for (User student : existingCourse.get().getStudents()) {
+            notificationService.createNotification(student.getId(), "The course '" + existingCourse.get().getTitle() + "' has been updated.");
+        }
+
+    }*/
+
+    public void updateCourse(String id, Course updatedCourse, UserRole role) {
+        if (!isInstructorOrAdmin(role)) {
+            throw new IllegalArgumentException("Only Instructors or Admins can update courses.");
+        }
+
+        Optional<Course> existingCourseOptional = courseRepository.findById(id);
+        if (existingCourseOptional.isEmpty()) {
+            throw new IllegalArgumentException("Course with ID " + id + " does not exist.");
+        }
+
+        Course existingCourse = existingCourseOptional.get();
+
+        if (courseRepository.existsByTitle(updatedCourse.getTitle())
+                && !existingCourse.getTitle().equalsIgnoreCase(updatedCourse.getTitle())) {
+            throw new IllegalArgumentException("A course with the title '" + updatedCourse.getTitle() + "' already exists.");
+        }
+
+        if (courseRepository.existsById(updatedCourse.getId()) && !id.equals(updatedCourse.getId())) {
+            throw new IllegalArgumentException("Another course with the ID " + updatedCourse.getId() + " already exists.");
+        }
+
+        // Retain existing students, lessons, courseQuestions, and assignments
+        updatedCourse.setStudents(existingCourse.getStudents());
+        updatedCourse.setLessons(existingCourse.getLessons());
+        updatedCourse.setCourseQuestions(existingCourse.getCourseQuestions());
+        updatedCourse.setAssignments(existingCourse.getAssignments());
+
+        courseRepository.save(updatedCourse);
+
+        // Notify students about the course update
+        for (User student : existingCourse.getStudents()) {
+            notificationService.createNotification(student.getId(), "The course '" + existingCourse.getTitle() + "' has been updated.");
+        }
     }
 
     private boolean isInstructorOrAdmin(UserRole role) {

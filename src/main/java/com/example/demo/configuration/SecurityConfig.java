@@ -41,11 +41,12 @@ public class SecurityConfig {
                                 "/{courseId}", "/api/lessons", "/api/enrollments", "/api/courses/{courseId}",
                                 "/api/attendance", "/api/attendance/generate-otp", "/api/attendance/submit-otp", "/api/attendance/exportAttendances/{lessonId}",
                                 "/api/attendance/lesson/{lessonId}/marked","/api/quizzes" , "/api/quizzes/{quizId}/questions"
-                                ,"/api/quizzes/{quizId}/attemptQuiz", "/api/quizzes/{quizId}/submitQuiz"
+                                ,"/api/quizzes/{quizId}/attemptQuiz", "/api/quizzes/{quizId}/submitQuiz" , "api/enrollments/course/{courseId}"
                                 ,"/api/assignments/create","/api/assignments/{assignmentId}/submit", "/api/assignments/exportSubmissions",
                                 "/api/assignments/assignments","/api/assignments/submissions",
                                 "/api/assignments/{assignmentId}/feedback","/api/quizzes/quizAttempts",
-                                "/api/quizzes/quizAttempts/{studentId}", "/api/quizzes/exportQuizAttempts"
+                                "/api/quizzes/quizAttempts/{studentId}", "/api/quizzes/exportQuizAttempts" , "/notifications/{userId}" , "/notifications/{userId}/unread"
+                                , "/notifications/{userId}/{notificationId}/read" , "/notifications/{userId}/readAll" ,  "/notifications/{userId}/{notificationId}"
                         ).authenticated()
                 )
                 .httpBasic(withDefaults()).csrf((csrf) -> csrf.disable())
