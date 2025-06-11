@@ -1,0 +1,1 @@
+Web-based Learning Management System using Spring boot. It aims to serve three primary user roles—Admin, Instructor, and Student—each with role-specific features and responsibilities. Built using Java and Spring Boot, combining course management, assessments, user management and performance tracking.
